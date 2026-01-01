@@ -89,6 +89,9 @@ A dedicated platform for managing financial aid points, enabling students in nee
 ```
 爱心屋大创 5/
 ├── app.py                # 应用主程序
+├── changeExcel.py        # 整理excel程序
+├── instance/             # 实例文件
+│   ├── shop.db           # 数据库
 ├── templates/            # HTML模板文件
 │   ├── admin.html        # 管理员界面
 │   ├── login.html        # 登录界面
@@ -98,7 +101,6 @@ A dedicated platform for managing financial aid points, enabling students in nee
 │   └── deepseek.html     # 聊天对话框页面
 ├── static/               # 静态资源文件
 │   ├── images/           # 商品图片
-│   ├── styles.css        # 样式文件
 │   ├── scripts.js        # JavaScript文件
 │   └── help.mp4          # 帮助视频
 └── README.md             # 项目说明文档
