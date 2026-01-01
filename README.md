@@ -15,6 +15,7 @@ A dedicated platform for managing financial aid points, enabling students in nee
 |------------------|----------|
 | ![带聊天的商品页面](static/view2.png) | ![商品页面](static/view3.png) |
 
+
 ## 功能特点
 
 ### 核心功能
@@ -41,7 +42,6 @@ A dedicated platform for managing financial aid points, enabling students in nee
 ### 前端
 - **HTML5/CSS3**：页面结构和样式
 - **JavaScript**：客户端交互逻辑
-- **Jinja2**：模板引擎，实现动态页面
 
 ## 安装和运行
 
@@ -76,24 +76,12 @@ A dedicated platform for managing financial aid points, enabling students in nee
    pip install flask flask-sqlalchemy openpyxl
    ```
 
-5. **初始化数据库**
-   ```bash
-   python
-   ```
-   在Python交互式环境中执行：
-   ```python
-   from app import app, db
-   with app.app_context():
-       db.create_all()
-   exit()
-   ```
-
-6. **运行应用**
+5. **运行应用**
    ```bash
    python app.py
    ```
 
-7. **访问应用**
+6. **访问应用**
    在浏览器中输入：`http://localhost:5000`
 
 ## 项目结构
@@ -113,7 +101,6 @@ A dedicated platform for managing financial aid points, enabling students in nee
 │   ├── styles.css        # 样式文件
 │   ├── scripts.js        # JavaScript文件
 │   └── help.mp4          # 帮助视频
-├── shop.db               # SQLite数据库文件
 └── README.md             # 项目说明文档
 ```
 
@@ -155,6 +142,7 @@ A dedicated platform for managing financial aid points, enabling students in nee
 ## 联系方式
 
 如有疑问，请联系作者微信咨询。
+![wx](static/VxCode.png) 
 
 ## 注意事项
 
