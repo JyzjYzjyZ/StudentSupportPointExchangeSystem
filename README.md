@@ -14,13 +14,6 @@ A dedicated platform for managing financial aid points, enabling students in nee
 | 带聊天的商品页面 | 商品页面 |
 |------------------|----------|
 | ![带聊天的商品页面](static/view2.png) | ![商品页面](static/view3.png) |
-## 使用教程视频
-
-<video controls width="100%" style="max-width: 800px; height: auto; margin: 20px 0;">
-    <source src="static/help.mp4" type="video/mp4">
-    您的浏览器不支持视频播放，请点击 <a href="static/help.mp4">此处</a> 下载观看。
-</video>
-
 
 ## 功能特点
 
