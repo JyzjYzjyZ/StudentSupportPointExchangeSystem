@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>管理员面板</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        :root {
+            --primary: #1677ff;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --border: #e5e6eb;
+            --text: #333;
+            --muted: #888;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* ===== 布局 ===== */
+        .layout {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* ===== 左侧菜单 ===== */
+        .sidebar {
+            width: 220px;
+            background: #001529;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .menu a {
+            display: block;
+            padding: 14px 24px;
+            color: #cfd3dc;
+            text-decoration: none;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: rgba(22,119,255,0.2);
+            color: #fff;
+        }
+
+        /* ===== 主内容 ===== */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部栏 */
+        .header {
+            height: 56px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .header .user {
+            color: var(--muted);
+        }
+
+        /* 内容区 */
+        .content {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* ===== 卡片 ===== */
+        .card {
+            background: var(--card);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            margin: 0 0 16px;
+            color: var(--primary);
+        }
+
+        /* ===== 表单 ===== */
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: var(--primary);
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button.secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .return-btn {
+            background-color: #dc3545;
+        }
+
+        .return-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* ===== 表格 ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        thead {
+            background: #fafafa;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            font-weight: 600;
+        }
+
+        .actions button {
+            margin-right: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+        }
+
+        /* 图片预览 */
+        .image-preview {
+            margin: 10px 0;
+            max-width: 200px;
+            max-height: 200px;
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .product-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        /* 批量操作按钮样式 */
+        .batch-actions {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .batch-btn {
+            background-color: #28a745;
+        }
+
+        .batch-btn:hover {
+            background-color: #218838;
+        }
+
+        .collapse-btn {
+            background-color: #007bff;
+        }
+
+        .collapse-btn:hover {
+            background-color: #0069d9;
+        }
+
+        /* 筛选和搜索样式 */
+        .filter-search-section {
+            margin: 10px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding: 10px;
+            background-color: rgba(255, 214, 102, 0.05);
+            border-radius: 5px;
+            border: 1px solid var(--accent);
+        }
+
+        .filter-group, .search-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-search-label {
+            font-weight: 600;
+            color: #495057;
+            white-space: nowrap;
+        }
+
+        .filter-search-input {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            width: 200px;
+            font-size: 14px;
+        }
+
+        .filter-btn {
+            background-color: #17a2b8;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            background-color: #138496;
+        }
+
+        .search-btn {
+            background-color: #28a745;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background-color: #218838;
+        }
+
+        .reset-btn {
+            background-color: #6c757d;
+            white-space: nowrap;
+        }
+
+        .reset-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .clear-all-btn {
+            background-color: #dc3545;
+            white-space: nowrap;
+        }
+
+        .clear-all-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- 左侧菜单 -->
+        <div class="sidebar">
+            <div class="logo">爱心屋管理后台</div>
+            <div class="menu">
+                <a href="#" class="active">用户管理</a>
+                <a href="#">商品管理</a>
+                <a href="#">整理表格</a>
+                <a href="#" id="help-link">使用须知</a>
+            </div>
+        </div>
+
+        <!-- 主体 -->
+        <div class="main">
+            <!-- 顶部栏 -->
+            <div class="header">
+                <div>管理员面板</div>
+                <div class="user">
+                    <a href="/logout">退出登录</a>
+                </div>
+            </div>
+
+            <!-- 内容 -->
+            <div class="content">
+                <!-- 使用须知iframe -->
+                <div id="help-container" style="display: none; margin-bottom: 20px; width: 100%; height: calc(100vh - 120px);">
+                    <iframe src="/help" width="100%" height="100%" frameborder="0" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"></iframe>
+                </div>
+                <!-- 用户管理内容区域 -->
+                <div id="user-management-content">
+                    <!-- 批量导入用户 -->
+                    <div class="card">
+                        <h3>批量导入用户</h3>
+                        <form method="POST" action="/import_excel" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label>选择Excel文件:</label>
+                                <input type="file" name="excel_file" accept=".xlsx, .xls" required>
+                                <p style="font-size: 0.8rem; color: #666;">支持.xlsx和.xls格式，需包含：姓名、学号、学院、爱心币数量、剩余爱心币列</p>
+                            </div>
+                            <button type="submit">导入Excel</button>
+                        </form>
+                    </div>
+
+                    <!-- 用户管理 -->
+                    <div class="card">
+                        <h3>用户管理</h3>
+
+                        <!-- 整合筛选和搜索功能区域 -->
+                        <div class="filter-search-section">
+                            <!-- 学院筛选 -->
+                            <div class="filter-group">
+                                <span class="filter-search-label">学院筛选：</span>
+                                <input type="text" id="collegeFilter" class="filter-search-input" placeholder="输入学院名称">
+                                <button id="filterBtn" class="filter-btn">筛选</button>
+                                <button id="resetFilterBtn" class="reset-btn">重置筛选</button>
+                            </div>
+
+                            <!-- 学号/姓名搜索 -->
+                            <div class="search-group">
+                                <span class="filter-search-label">用户搜索：</span>
+                                <input type="text" id="userSearch" class="filter-search-input" placeholder="学号/姓名">
+                                <button id="searchBtn" class="search-btn">搜索</button>
+                                <button id="resetSearchBtn" class="reset-btn">重置搜索</button>
+                            </div>
+
+
+                            <!-- 清空所有条件 -->
+                            <button id="clearAllBtn" class="clear-all-btn">清空所有条件</button>
+                        </div>
+
+                        
+
+                        <form action="{{ url_for('add_user') }}" method="POST">
+                            <div class="form-row">
+                                <input type="text" name="username" placeholder="用户名（学号）" required>
+                                <input type="password" name="password" placeholder="密码" required>
+                                <input type="text" name="name" placeholder="姓名" required>
+                                <select name="gender">
+                                    <option value="male">男</option>
+                                    <option value="female">女</option>
+                                </select>
+                                <input type="text" name="college" placeholder="学院">
+                                <input type="number" name="points" placeholder="初始积分" value="0">
+                                <label style="display: flex; align-items: center; gap: 4px;">
+                                    <input type="checkbox" name="is_admin"> 设为管理员
+                                </label>
+                                <button type="submit">添加用户</button>
+                            </div>
+                        </form>
+
+                        <table id="userTable">
+                            <thead>
+                                <tr>
+                                    <th>学生列表<div class="batch-actions">
+                                        <button id="expandAllBtn" class="batch-btn">展开所有用户购买记录</button>
+                                        <button id="collapseAllBtn" class="collapse-btn">折叠所有用户购买记录</button>
+                                        </div></th>
+                                    <!-- 展开/折叠所有用户按钮 -->
+                                    
+                                    <!-- <th>姓名</th>
+                                    <th>性别</th>
+                                    <th>学院</th>
+                                    <th>爱心币数量</th>
+                                    <th>剩余爱心币</th>
+                                    <th>角色</th>
+                                    <th>操作</th> -->
+                                </tr>
+                            </thead>
+                            <!-- 替换为卡片式布局 -->
+                            <style>
+                            :root {
+                              --primary:#1677ff;
+                              --bg:#f5f7fa;
+                              --border:#e5e6eb;
+                              --text:#1f2329;
+                              --muted:#86909c;
+                              --danger:#f53f3f;
+                            }
+                            
+                            .user-grid {
+                              display: grid;
+                              grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                              gap: 16px;
+                              margin-top: 16px;
+                            }
+                            
+                            /* 紧凑卡片 */
+                            .user-card {
+                              border: 1px solid var(--border);
+                              border-radius: 8px;
+                              background: #fff;
+                              padding: 12px;
+                              height: 100%;
+                              transition: all .15s ease;
+                          }
+                          
+                          .user-card:hover {
+                              transform: translateY(-2px);
+                              box-shadow: 0 6px 16px rgba(0,0,0,.06);
+                          }
+                          
+                          .card-header {
+                              display: flex;
+                              justify-content: space-between;
+                              align-items: center;
+                              padding: 0;
+                              margin-bottom: 6px;
+                              border: none;
+                          }
+                          
+                          .user-name {
+                              font-size: 14px;
+                              font-weight: 600;
+                          }
+                          
+                          .role {
+                              font-size: 11px;
+                              padding: 2px 8px;
+                              border-radius: 10px;
+                              background: rgba(22,119,255,.1);
+                              color: var(--primary);
+                          }
+                          
+                          .info {
+                              font-size: 12px;
+                              color: #4e5969;
+                              line-height: 1.5;
+                          }
+                          
+                          .info span {
+                              color: var(--muted);
+                          }
+                          
+                          /* 爱心币统计 */
+                          .coin-row {
+                              display: flex;
+                              justify-content: flex-start;
+                              background: #f7f8fa;
+                              border-radius: 6px;
+                              padding: 6px 8px;
+                              margin-top: 8px;
+                              font-size: 12px;
+                          }
+                          
+                          .coin-row b {
+                              color: var(--primary);
+                          }
+                          
+                          /* 操作 */
+                          .actions {
+                              display: flex;
+                              justify-content: flex-end;
+                              gap: 10px;
+                              margin-top: 6px;
+                              font-size: 12px;
+                          }
+                          
+                          .actions .edit { color: var(--text); cursor: pointer; }
+                          .actions .del { color: var(--danger); cursor: pointer; }
+                          
+                          /* 购买记录样式 */
+                          .purchase-records {
+                              margin-top: 8px;
+                              padding-top: 8px;
+                              border-top: 1px dashed var(--border);
+                          }
+                          
+                          .purchase-header {
+                              font-size: 12px;
+                              color: #555;
+                              cursor: pointer;
+                              display: flex;
+                              align-items: center;
+                              gap: 4px;
+                          }
+                          
+                          .purchase-toggle {
+                              font-size: 10px;
+                          }
+                          
+                          .purchase-records-container {
+                              margin-top: 8px;
+                              font-size: 11px;
+                          }
+                          
+                          .purchase-history {
+                              width: 100%;
+                              background: rgba(255, 214, 102, 0.05);
+                              border-collapse: collapse;
+                          }
+                          
+                          .purchase-history th,
+                          .purchase-history td {
+                              padding: 4px;
+                              text-align: left;
+                              border: 1px solid rgba(255, 214, 102, 0.2);
+                          }
+                          
+                          .purchase-history th {
+                              background: rgba(255, 214, 102, 0.2);
+                              font-weight: 500;
+                          }
+                          
+                          .return-btn {
+                              font-size: 10px;
+                              padding: 2px 6px;
+                              background: var(--danger);
+                              color: white;
+                              border: none;
+                              border-radius: 4px;
+                              cursor: pointer;
+                          }
+                          </style>
+                            
+                        </table>
+                        <!-- 替换为卡片式布局 -->
+                            <div class="user-grid">
+                            {% for user in users|sort(attribute='is_admin', reverse=true) %}
+                            {% set random_color = "hsl(" ~ range(0, 360)|random ~ ", 70%, 90%)" %}
+                            <!-- 给用户卡片添加数据属性，用于筛选和搜索 -->
+                            <div class="user-card user-row"
+                                id="userRow-{{ user.id }}"
+                                data-college="{{ user.college or '' }}"
+                                data-username="{{ user.username or '' }}"
+                                data-name="{{ user.name or '' }}">
+                                <div class="card-header">
+                                    <div class="user-name">{{ user.name }}</div>
+                                    <div class="role">{% if user.is_admin %}管理员{% else %}学生{% endif %}</div>
+                                </div>
+                                <div class="info"><span>学号：</span>{{ user.username }}</div>
+                                <div class="info"><span>密码：</span>{{ user.password }}</div>
+                                <div class="info"><span>性别：</span>{{ '男' if user.gender == 'male' else '女' }}</div>
+                                <div class="info"><span>学院：</span>{{ user.college or '' }}</div>
+                                <div class="coin-row">
+                                    <div>总 <b>{{ user.points }}</b></div>
+                                </div>
+                                <div class="actions">
+                                    <button onclick="editUser({{ user.id }})" class="edit">编辑</button>
+                                    {% if not user.is_admin %}
+                                    <form action="{{ url_for('delete_student', student_id=user.id) }}" method="POST" style="display: inline;">
+                                        <button type="submit" class="del">删除</button>
+                                    </form>
+                                    {% else %}
+                                    <form action="{{ url_for('delete_admin', admin_id=user.id) }}" method="POST" style="display: inline;">
+                                        <button type="submit" class="del">删除</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+
+                                {% if not user.is_admin %}
+                                <!-- 购买记录 -->
+                                <div class="purchase-records user-purchase-records" 
+                                     id="purchaseRow-{{ user.id }}" 
+                                     data-college="{{ user.college or '' }}" 
+                                     data-username="{{ user.username or '' }}" 
+                                     data-name="{{ user.name or '' }}">
+                                    <div class="purchase-header" onclick="togglePurchaseRecords(this)">
+                                        <span class="purchase-toggle">▶</span> 购买记录
+                                    </div>
+                                    <div class="purchase-records-container" style="display: none;">
+                                        <table class="purchase-history">
+                                            <tr>
+                                                <th>商品</th>
+                                                <th>数量</th>
+                                                <th>总价</th>
+                                                <th>时间</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            {% for record in user.purchases|sort(attribute='purchase_time', reverse=true) %}
+                                            <tr>
+                                                <td>{{ record.product.name }}</td>
+                                                <td>{{ record.quantity }}</td>
+                                                <td>{{ record.quantity * record.product.price }}</td>
+                                                <td>{{ record.purchase_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                                <td>
+                                                    <button class="return-btn" onclick="handleReturn({{ record.id }}, this)">退货</button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                            </div>
+                    </div>
+                </div>
+
+                <!-- 商品管理内容区域 -->
+                <div id="product-management-content">
+                    <!-- 商品管理 -->
+                    <div class="card">
+                        <h3>商品管理</h3>
+
+                        <h4 style="margin: 0 0 12px;">添加商品</h4>
+                        <form method="POST" action="/add_product" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label>名称:</label>
+                                <input type="text" name="name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>图片:</label>
+                                <input type="file" name="picture" accept="image/*" required onchange="previewImage(event, 'add-preview')">
+                                <img id="add-preview" class="image-preview" alt="预览图">
+                            </div>
+
+                            <div class="form-group">
+                                <label>价格:</label>
+                                <input type="number" step="0.01" name="price" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>库存:</label>
+                                <input type="number" name="stock" required value="99999">
+                            </div>
+
+                            <div class="form-group">
+                                <label>限购数量:</label>
+                                <input type="number" name="limit" required value="99999">
+                            </div>
+
+                            <button type="submit">添加商品</button>
+                        </form>
+
+                        <h4 style="margin: 20px 0 12px;">当前商品</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Picture</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Limit</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>
+                                    {% if product.picture %}
+                                    <img src="/static/images/{{ product.picture }}" class="product-img" alt="{{ product.name }}">
+                                    {% else %}
+                                    <span>无图片</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ product.price }}</td>
+                                <td>{{ product.stock }}</td>
+                                <td>{{ product.limit }}</td>
+                                <td class="actions">
+                                    <form action="{{ url_for('increase_stock', product_id=product.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit">+</button>
+                                    </form>
+                                    <form action="{{ url_for('decrease_stock', product_id=product.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit">-</button>
+                                    </form>
+                                    <button onclick="editProduct({{ product.id }})">编辑</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+                <!-- 整理表格内容区域 -->
+                <div id="excel-management-content">
+                    <div class="card">
+                        <h3>整理Excel表格</h3>
+                        <form id="excelForm">
+                            <div class="form-group">
+                                <label>选择Excel文件:</label>
+                                <input type="file" id="excelFile" accept=".xlsx, .xls" required>
+                                <p style="font-size: 0.8rem; color: #666;">支持.xlsx和.xls格式，需包含：姓名、学号、学院、爱心币数量、剩余爱心币列</p>
+                            </div>
+                            <button type="submit">处理Excel</button>
+                        </form>
+                        <div id="processResult" style="margin-top: 20px; font-size: 0.9rem;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+    // 图片预览功能
+    function previewImage(event, previewId) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // 检查文件类型是否为图片
+        if (!file.type.startsWith('image/')) {
+            alert('请选择图片文件');
+            event.target.value = '';
+            return;
+        }
+
+        const preview = document.getElementById(previewId);
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        }
+
+        reader.readAsDataURL(file);
+    }
+
+    // 编辑商品功能
+    function editProduct(productId) {
+        console.log('尝试编辑商品ID:', productId);
+
+        fetch(`/get_product/${productId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('获取商品数据失败');
+                }
+                return response.json();
+            })
+            .then(product => {
+                console.log('获取到的商品数据:', product);
+
+                const modal = document.createElement('div');
+                modal.id = `edit-modal-${productId}`;
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100%';
+                modal.style.height = '100%';
+                modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                modal.style.display = 'flex';
+                modal.style.justifyContent = 'center';
+                modal.style.alignItems = 'center';
+                modal.style.zIndex = '1000';
+
+                modal.innerHTML = `
+                    <div style="background:white; padding:20px; border-radius:5px; width:300px;">
+                        <h3>编辑商品</h3>
+                        <form id="editForm" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label>名称:
+                                    <input type="text" name="name" value="${product.name}" required>
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>当前图片: <br>
+                                    <img src="/static/images/${product.picture}" style="width:100px;height:100px;margin:10px 0;" alt="当前图片">
+                                </label><br>
+                                <label>更换图片:
+                                    <input type="file" name="picture" accept="image/*" onchange="previewImage(event, 'edit-preview-${productId}')">
+                                </label><br>
+                                <img id="edit-preview-${productId}" class="image-preview" alt="预览图">
+                            </div>
+
+                            <div class="form-group">
+                                <label>价格:
+                                    <input type="number" step="0.01" name="price" value="${product.price}" required>
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>库存:
+                                    <input type="number" name="stock" value="${product.stock}" required>
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>限购数量:
+                                    <input type="number" name="limit" value="${product.limit}" required>
+                                </label>
+                            </div>
+
+                            <button type="submit">保存</button>
+                            <button type="button" onclick="document.getElementById('edit-modal-${productId}').remove()">取消</button>
+                        </form>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+
+                modal.querySelector('#editForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+
+                    fetch(`/update_product/${productId}`, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('更新商品失败');
+                        }
+                        // 处理204无内容响应
+                        if (response.status === 204) {
+                            return { message: '商品更新成功' };
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        alert(data.message);
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('更新商品时出错:', error);
+                        alert('更新商品失败，请重试');
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('获取商品数据时出错:', error);
+                alert('获取商品数据失败，请重试');
+            });
+    }
+
+    // 编辑用户功能
+    function editUser(userId) {
+        console.log('尝试编辑用户ID:', userId);
+
+        fetch(`/get_user/${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('获取用户数据失败');
+                }
+                return response.json();
+            })
+            .then(user => {
+                console.log('获取到的用户数据:', user);
+
+                const modal = document.createElement('div');
+                modal.id = `edit-user-modal-${userId}`;
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100%';
+                modal.style.height = '100%';
+                modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                modal.style.display = 'flex';
+                modal.style.justifyContent = 'center';
+                modal.style.alignItems = 'center';
+                modal.style.zIndex = '1000';
+
+                modal.innerHTML = `
+                    <div style="background:white; padding:20px; border-radius:5px; width:400px;">
+                        <h3>编辑用户</h3>
+                        <form id="editUserForm">
+                            <div class="form-group">
+                                <label>学号:
+                                    <input type="text" name="username" value="${user.username}" required>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>密码:
+                                    <input type="text" name="password" value="${user.password}" required>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>姓名:
+                                    <input type="text" name="name" value="${user.name}" required>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>性别:
+                                    <select name="gender">
+                                        <option value="male" ${user.gender === 'male' ? 'selected' : ''}>男</option>
+                                        <option value="female" ${user.gender === 'female' ? 'selected' : ''}>女</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>学院:
+                                    <input type="text" name="college" value="${user.college || ''}">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>爱心币数量:
+                                    <input type="number" name="points" value="${user.points}" required>
+                                </label>
+                            </div>
+                            <!-- 
+                                <div class="form-group">
+                                    <label>剩余爱心币:
+                                        <input type="number" name="remaining_points" value="${user.remaining_points}" required>
+                                    </label>
+                                </div>
+                            -->
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 4px;">
+                                    <input type="checkbox" name="is_admin" ${user.is_admin ? 'checked' : ''}> 设为管理员
+                                </label>
+                            </div>
+                            <button type="submit">保存</button>
+                            <button type="button" onclick="document.getElementById('edit-user-modal-${userId}').remove()">取消</button>
+                        </form>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+
+                modal.querySelector('#editUserForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+
+                    fetch(`/update_user/${userId}`, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('更新用户失败');
+                        }
+                        modal.remove();
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error('更新用户时出错:', error);
+                        alert('更新失败: ' + error.message);
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('获取用户数据时出错:', error);
+                alert('获取用户数据失败，请重试');
+            });
+    }
+
+    // 处理退货
+    function handleReturn(recordId, button) {
+        if (confirm('确定要退货吗？')) {
+            fetch(`/return_purchase/${recordId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    // 删除对应的行
+                    const row = button.closest('tr');
+                    row.remove();
+                } else {
+                    alert('退货失败');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('退货请求失败');
+            });
+        }
+    }
+
+    // 切换购买记录显示/隐藏
+    function togglePurchaseRecords(element) {
+        const container = element.nextElementSibling;
+        const icon = element.querySelector('.purchase-toggle');
+        
+        if (container.style.display === 'none' || container.style.display === '') {
+            container.style.display = 'block';
+            icon.textContent = '▼';
+        } else {
+            container.style.display = 'none';
+            icon.textContent = '▶';
+        }
+    }
+
+    // 展开所有用户购买记录
+    document.getElementById('expandAllBtn').addEventListener('click', () => {
+        const containers = document.querySelectorAll('.purchase-records-container');
+        const icons = document.querySelectorAll('.toggle-icon');
+        
+        containers.forEach(container => {
+            container.style.display = 'block';
+        });
+        
+        icons.forEach(icon => {
+            icon.textContent = '▼';
+        });
+    });
+
+    // 折叠所有用户购买记录
+    document.getElementById('collapseAllBtn').addEventListener('click', () => {
+        const containers = document.querySelectorAll('.purchase-records-container');
+        const icons = document.querySelectorAll('.toggle-icon');
+        
+        containers.forEach(container => {
+            container.style.display = 'none';
+        });
+        
+        icons.forEach(icon => {
+            icon.textContent = '▶';
+        });
+    });
+
+    // 学院筛选
+    document.getElementById('filterBtn').addEventListener('click', () => {
+        const filterValue = document.getElementById('collegeFilter').value.toLowerCase();
+        const userRows = document.querySelectorAll('.user-row, .user-purchase-records');
+        
+        userRows.forEach(row => {
+            const college = row.dataset.college.toLowerCase();
+            if (college.includes(filterValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    // 重置学院筛选
+    document.getElementById('resetFilterBtn').addEventListener('click', () => {
+        document.getElementById('collegeFilter').value = '';
+        const userRows = document.querySelectorAll('.user-row, .user-purchase-records');
+        userRows.forEach(row => {
+            row.style.display = '';
+        });
+    });
+
+    // 用户搜索
+    document.getElementById('searchBtn').addEventListener('click', () => {
+        const searchValue = document.getElementById('userSearch').value.toLowerCase();
+        const userRows = document.querySelectorAll('.user-row, .user-purchase-records');
+        
+        userRows.forEach(row => {
+            const username = row.dataset.username.toLowerCase();
+            const name = row.dataset.name.toLowerCase();
+            if (username.includes(searchValue) || name.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    // 重置用户搜索
+    document.getElementById('resetSearchBtn').addEventListener('click', () => {
+        document.getElementById('userSearch').value = '';
+        const userRows = document.querySelectorAll('.user-row, .user-purchase-records');
+        userRows.forEach(row => {
+            row.style.display = '';
+        });
+    });
+
+    // 清空所有条件
+    document.getElementById('clearAllBtn').addEventListener('click', () => {
+        document.getElementById('collegeFilter').value = '';
+        document.getElementById('userSearch').value = '';
+        const userRows = document.querySelectorAll('.user-row, .user-purchase-records');
+        userRows.forEach(row => {
+            row.style.display = '';
+        });
+    });
+
+    // 菜单切换功能
+    function showUserManagement() {
+        // 显示用户管理内容
+        document.getElementById('user-management-content').style.display = 'block';
+        // 隐藏商品管理内容
+        document.getElementById('product-management-content').style.display = 'none';
+        // 隐藏整理表格内容
+        document.getElementById('excel-management-content').style.display = 'none';
+        // 更新菜单激活状态
+        document.querySelectorAll('.menu a')[0].classList.add('active');
+        document.querySelectorAll('.menu a')[1].classList.remove('active');
+        document.querySelectorAll('.menu a')[2].classList.remove('active');
+    }
+
+    function showProductManagement() {
+        // 隐藏用户管理内容
+        document.getElementById('user-management-content').style.display = 'none';
+        // 显示商品管理内容
+        document.getElementById('product-management-content').style.display = 'block';
+        // 隐藏整理表格内容
+        document.getElementById('excel-management-content').style.display = 'none';
+        // 更新菜单激活状态
+        document.querySelectorAll('.menu a')[0].classList.remove('active');
+        document.querySelectorAll('.menu a')[1].classList.add('active');
+        document.querySelectorAll('.menu a')[2].classList.remove('active');
+    }
+
+    function showExcelManagement() {
+        // 隐藏用户管理内容
+        document.getElementById('user-management-content').style.display = 'none';
+        // 隐藏商品管理内容
+        document.getElementById('product-management-content').style.display = 'none';
+        // 显示整理表格内容
+        document.getElementById('excel-management-content').style.display = 'block';
+        // 更新菜单激活状态
+        document.querySelectorAll('.menu a')[0].classList.remove('active');
+        document.querySelectorAll('.menu a')[1].classList.remove('active');
+        document.querySelectorAll('.menu a')[2].classList.add('active');
+    }
+
+    // 初始化页面
+    document.addEventListener('DOMContentLoaded', () => {
+        // 默认显示用户管理内容
+        showUserManagement();
+        
+        // 绑定菜单点击事件
+        document.querySelectorAll('.menu a')[0].addEventListener('click', (e) => {
+            e.preventDefault();
+            showUserManagement();
+        });
+        
+        document.querySelectorAll('.menu a')[1].addEventListener('click', (e) => {
+            e.preventDefault();
+            showProductManagement();
+        });
+        
+        document.querySelectorAll('.menu a')[2].addEventListener('click', (e) => {
+            e.preventDefault();
+            showExcelManagement();
+        });
+    });
+    // 处理Excel文件上传
+    document.getElementById('excelForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById('excelFile');
+        const file = fileInput.files[0];
+        const resultDiv = document.getElementById('processResult');
+
+        if (!file) {
+            resultDiv.innerHTML = '<span style="color: red;">请选择一个Excel文件</span>';
+            return;
+        }
+
+        // 创建FormData对象
+        const formData = new FormData();
+        formData.append('excel_file', file);
+
+        resultDiv.innerHTML = '<span style="color: blue;">正在处理Excel文件...</span>';
+
+        // 发送文件到服务器处理
+        fetch('/process_excel', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            return response.json().then(data => {
+                if (!response.ok) {
+                    // 即使状态码不是200，也要解析JSON错误信息
+                    throw new Error(data.error || '文件处理失败');
+                }
+                return data;
+            });
+        })
+        .then(data => {
+            if (data.success) {
+                resultDiv.innerHTML = `<span style="color: green;">文件处理成功！</span><br>
+                处理后的文件路径：${data.file_path}<br>
+                原始文件包含 ${data.original_sheets} 个sheet<br>
+                合并后的数据总行数：${data.total_rows}<br>
+                已删除包含"高等职业技术学院"的行：${data.deleted_rows} 行`;
+            } else {
+                resultDiv.innerHTML = `<span style="color: red;">文件处理失败：${data.error}</span>`;
+            }
+        })
+        .catch(error => {
+            console.error('处理Excel文件时出错:', error);
+            resultDiv.innerHTML = `<span style="color: red;">处理失败: ${error.message}</span>`;
+        });
+    });
+
+    // 使用须知显示控制
+    document.getElementById('help-link').addEventListener('click', function() {
+        // 显示使用须知iframe
+        document.getElementById('help-container').style.display = 'block';
+        // 隐藏其他内容区域
+        document.getElementById('user-management-content').style.display = 'none';
+        document.getElementById('product-management-content').style.display = 'none';
+        document.getElementById('excel-management-content').style.display = 'none';
+        // 更新菜单激活状态
+        document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+    });
+
+    // 更新现有的菜单切换函数，确保使用须知被隐藏
+    function showUserManagement() {
+        // 显示用户管理内容
+        document.getElementById('user-management-content').style.display = 'block';
+        // 隐藏其他内容
+        document.getElementById('product-management-content').style.display = 'none';
+        document.getElementById('excel-management-content').style.display = 'none';
+        document.getElementById('help-container').style.display = 'none';
+        // 更新菜单激活状态
+        document.querySelectorAll('.menu a')[0].classList.add('active');
+        document.querySelectorAll('.menu a')[1].classList.remove('active');
+        document.querySelectorAll('.menu a')[2].classList.remove('active');
+        document.querySelectorAll('.menu a')[3].classList.remove('active');
+    }
+
+    function showProductManagement() {
+        // 隐藏用户管理内容
+        document.getElementById('user-management-content').style.display = 'none';
+        // 显示商品管理内容
+        document.getElementById('product-management-content').style.display = 'block';
+        // 隐藏其他内容
+        document.getElementById('excel-management-content').style.display = 'none';
+        document.getElementById('help-container').style.display = 'none';
+        // 更新菜单激活状态
+        document.querySelectorAll('.menu a')[0].classList.remove('active');
+        document.querySelectorAll('.menu a')[1].classList.add('active');
+        document.querySelectorAll('.menu a')[2].classList.remove('active');
+        document.querySelectorAll('.menu a')[3].classList.remove('active');
+    }
+
+    function showExcelManagement() {
+        // 隐藏用户管理内容
+        document.getElementById('user-management-content').style.display = 'none';
+        // 隐藏商品管理内容
+        document.getElementById('product-management-content').style.display = 'none';
+        // 显示整理表格内容
+        document.getElementById('excel-management-content').style.display = 'block';
+        // 隐藏使用须知
+        document.getElementById('help-container').style.display = 'none';
+        // 更新菜单激活状态
+        document.querySelectorAll('.menu a')[0].classList.remove('active');
+        document.querySelectorAll('.menu a')[1].classList.remove('active');
+        document.querySelectorAll('.menu a')[2].classList.add('active');
+        document.querySelectorAll('.menu a')[3].classList.remove('active');
+    }
+    </script>
+</body>
+</html>

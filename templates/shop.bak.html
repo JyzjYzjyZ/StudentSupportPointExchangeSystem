@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>Shop</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+    :root {
+        --primary: #1677ff;
+        --bg: #f5f7fa;
+        --card: #ffffff;
+        --border: #e5e6eb;
+        --text: #1f2329;
+        --muted: #86909c;
+    }
+    html {
+        overflow: hidden;
+        height: 100%;
+    }
+    body {
+        margin: 0;
+        padding: 0 0 16px 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+        background: var(--bg);
+        color: var(--text);
+        overflow: auto;
+        height: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* ===== Layout ===== */
+    .app {
+        min-height: calc(100vh - 16px);
+        display: flex;
+        gap: 16px;
+        padding: 16px;
+        box-sizing: border-box;
+    }
+    
+    /* ===== Card ===== */
+    .card-ant {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    
+    #deepseek-frame {
+        width: 320px;
+        height: calc(100vh - 48px);
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    
+    #main-content {
+        flex: 1;
+        padding: 24px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        overflow: auto; /* 允许内容滚动 */
+        height: calc(100vh - 48px);
+        box-sizing: border-box;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    
+    .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text);
+    }
+    
+    .points-display {
+        background: #e8f3ff;
+        color: var(--primary);
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+    
+    h2 {
+        color: var(--text);
+        margin: 25px 0 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    /* ===== Table ===== */
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 24px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    th, td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+    }
+    
+    th {
+        background: #fafafa;
+        color: var(--text);
+        font-weight: 600;
+    }
+    
+    tr:hover {
+        background: #f5f5f5;
+    }
+    
+    /* ===== Links ===== */
+    a {
+        color: var(--primary);
+        text-decoration: none;
+        margin-right: 15px;
+        font-weight: 500;
+    }
+    
+    a:hover {
+        text-decoration: underline;
+    }
+    
+    /* ===== Inputs ===== */
+    input[type="number"] {
+        padding: 6px 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        width: 70px;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+    
+    input[type="number"]:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+    }
+    
+    /* ===== Buttons ===== */
+    .btn-ant {
+        background: var(--primary);
+        border: none;
+        color: #fff;
+        border-radius: 6px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s;
+        margin-left: 8px;
+    }
+    
+    .btn-ant:hover {
+        background: #4096ff;
+    }
+    
+    /* ===== Images ===== */
+    .product-image {
+        width: 52px;
+        height: 52px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+    }
+    
+    /* ===== Action Group ===== */
+    .action-group {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    /* ===== Mobile Adapt ===== */
+    @media (max-width: 768px) {
+        
+        body {
+            flex-direction: column;
+            padding: 8px;
+            gap: 8px;
+        }
+        
+        #deepseek-frame {
+            width: 100%;
+            height: 60vh;
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            z-index: 999;
+            transition: bottom .3s ease;
+            margin: 8px;
+        }
+        
+        #deepseek-frame.show {
+            bottom: 0;
+        }
+        
+        #main-content {
+            height: calc(100vh - 16px);
+            padding: 16px;
+        }
+        
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .page-title {
+            font-size: 20px;
+        }
+        
+        .action-group {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        
+        .btn-ant {
+            margin-left: 0;
+        }
+        
+        /* Floating Chat Button */
+        .chat-fab {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            z-index: 1000;
+            border-radius: 50px;
+            padding: 10px 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.15);
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <iframe id="deepseek-frame" src="/deepseek"></iframe>
+        <div id="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Welcome, {{ session.username }}!</h1>
+            <div class="points-display">Remaining points: {{ current_points }}</div>
+        </div>
+        
+        <a href="/logout">Logout</a>
+
+        <h2>Products</h2>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Picture</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Purchase Limit</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>
+                            {% if product.picture %}
+                                <img src="/static/images/{{ product.picture }}"
+                                     class="product-image"
+                                     alt="{{ product.name }}">
+                            {% else %}
+                                <span>无图片</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.price }}</td>
+                        <td>{{ product.stock }}</td>
+                        <td>{{ product.limit }}</td>
+                        <td>
+                            <form method="POST" action="/purchase/{{ product.id }}" onsubmit="return validatePurchase(this)">
+                                <div class="action-group">
+                                    <input type="number" name="quantity" min="1" max="{{ product.limit }}" value="1">
+                                    <button type="submit" class="btn-ant">Buy</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Your Purchase History</h2>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Total Cost</th>
+                        <th>Purchase Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in purchase_records %}
+                    <tr>
+                        <td>{{ record.product.name }}</td>
+                        <td>{{ record.quantity }}</td>
+                        <td>{{ record.quantity * record.product.price }}</td>
+                        <td>{{ record.purchase_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Floating Chat Button -->
+    <button class="btn btn-ant chat-fab d-md-none"
+        onclick="document.getElementById('deepseek-frame').classList.toggle('show')">
+        💬 Chat
+    </button>
+    </div>
+</body>
+</html>
+
+<script>
+function validatePurchase(form) {
+    const quantity = parseInt(form.quantity.value);
+    const limit = parseInt(form.quantity.max);
+    if (quantity > limit) {
+        alert(`购买数量不能超过限购数量: ${limit}`);
+        return false;
+    }
+    return true;
+}
+</script>

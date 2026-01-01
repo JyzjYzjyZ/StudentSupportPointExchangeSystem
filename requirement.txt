@@ -1,0 +1,9 @@
+Flask
+Flask-SQLAlchemy
+SQLAlchemy
+Werkzeug
+openpyxl
+Flask-WTF
+flask-login
+python-dotenv
+pytest

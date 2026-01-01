@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>使用须知</title>
+    <style>
+        body {
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            color: #1677ff;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        img {
+            max-width: calc(60% - 50px);
+            height: auto;
+            display: block;
+            margin: 10px 0;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        .version {
+            text-align: right;
+            color: #888;
+            margin-top: 40px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h2>制作人员</h2>
+    <p>作者：金彦泽，谭佳良</p>
+    <p>论文作者：金彦泽，张明昌</p>
+    <p>特别鸣谢：项阳，赵天豪</p>
+
+    <h2>使用说明</h2>
+    <p>首先点击“整理表格”规范化人员表格excel，形如</p>
+    <img src="../static/exampleExcel.png"></img>
+    <p>再点击“用户管理“，“导入excel”导入规范化的表格</p>
+    <p>若要清空数据库可以直接删除"./instance/shop.db"</p>
+    <p>默认管理员始终为name：111 password：111</p>
+
+    <h2>视频演示</h2>
+    <video controls style="max-width: 100%; height: auto; display: block; margin: 10px 0;">
+        <source src="../static/help.mp4" type="video/mp4">
+        您的浏览器不支持视频播放。
+    </video>
+
+    <h2>联系作者</h2>
+    <p>若有其他疑问请加作者微信咨询</p>
+    <img src="../static/VxCode.png"></img>
+    <p class="version">26.1.2</p>
+</body>
+</html>

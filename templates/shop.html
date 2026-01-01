@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <title>商店</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+    :root {
+        --primary: #1677ff;
+        --bg: #f5f7fa;
+        --card: #ffffff;
+        --border: #e5e6eb;
+        --text: #1f2329;
+        --muted: #86909c;
+    }
+    html {
+        overflow: hidden;
+        height: 100%;
+    }
+    body {
+        margin: 0;
+        padding: 0 0 16px 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+        background: var(--bg);
+        color: var(--text);
+        overflow: auto;
+        height: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* ===== Layout ===== */
+    .app {
+        min-height: calc(100vh - 16px);
+        display: flex;
+        gap: 16px;
+        padding: 16px;
+        box-sizing: border-box;
+    }
+    
+    /* ===== Card ===== */
+    .card-ant {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    
+    #deepseek-frame {
+        width: 320px;
+        height: calc(100vh - 48px);
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    
+    #main-content {
+        flex: 1;
+        padding: 24px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        overflow: auto; /* 允许内容滚动 */
+        height: calc(100vh - 48px);
+        box-sizing: border-box;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    
+    .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text);
+    }
+    
+    .points-display {
+        background: #e8f3ff;
+        color: var(--primary);
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+    
+    h2 {
+        color: var(--text);
+        margin: 25px 0 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    /* ===== Table ===== */
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 24px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    th, td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+    }
+    
+    th {
+        background: #fafafa;
+        color: var(--text);
+        font-weight: 600;
+    }
+    
+    tr:hover {
+        background: #f5f5f5;
+    }
+    
+    /* ===== Links ===== */
+    a {
+        color: var(--primary);
+        text-decoration: none;
+        margin-right: 15px;
+        font-weight: 500;
+    }
+    
+    a:hover {
+        text-decoration: underline;
+    }
+    
+    /* ===== Inputs ===== */
+    input[type="number"] {
+        padding: 6px 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        width: 70px;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+    
+    input[type="number"]:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+    }
+    
+    /* ===== Buttons ===== */
+    .btn-ant {
+        background: var(--primary);
+        border: none;
+        color: #fff;
+        border-radius: 6px;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s;
+        margin-left: 8px;
+    }
+    
+    .btn-ant:hover {
+        background: #4096ff;
+    }
+    
+    /* ===== Product Grid ===== */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+    
+    /* ===== Product Card ===== */
+    .product-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+    
+    .product-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,.08);
+        transform: translateY(-2px);
+    }
+    
+    /* ===== Product Image ===== */
+    .product-image-container {
+        width: 100%;
+        padding-top: 100%; /* 1:1 Aspect Ratio */
+        position: relative;
+        overflow: hidden;
+        background: var(--bg);
+    }
+    
+    .product-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: none;
+        border-radius: 0;
+    }
+    
+    .no-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 16px;
+        background: var(--bg);
+    }
+    
+    /* ===== Product Info ===== */
+    .product-info {
+        padding: 20px;
+    }
+    
+    .product-name {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 12px 0;
+        color: var(--text);
+        line-height: 1.4;
+        height: 2.8em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+    
+    .product-details {
+        margin-bottom: 16px;
+    }
+    
+    .product-price, .product-stock, .product-limit {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        color: var(--text);
+    }
+    
+    .product-action {
+        margin: 0;
+    }
+    
+    /* ===== Action Group ===== */
+    .action-group {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    /* ===== Mobile Adapt ===== */
+    @media (max-width: 768px) {
+        
+        body {
+            flex-direction: column;
+            padding: 8px;
+            gap: 8px;
+        }
+        
+        #deepseek-frame {
+            width: 100%;
+            height: 60vh;
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            z-index: 999;
+            transition: bottom .3s ease;
+            margin: 8px;
+        }
+        
+        #deepseek-frame.show {
+            bottom: 0;
+        }
+        
+        #main-content {
+            height: calc(100vh - 16px);
+            padding: 16px;
+        }
+        
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .page-title {
+            font-size: 20px;
+        }
+        
+        .action-group {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        
+        .btn-ant {
+            margin-left: 0;
+        }
+        
+        /* ===== Product Grid Mobile ===== */
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+        
+        .product-info {
+            padding: 16px;
+        }
+        
+        .product-name {
+            font-size: 16px;
+            height: auto;
+            -webkit-line-clamp: 1;
+        }
+        
+        .product-details {
+            margin-bottom: 12px;
+        }
+        
+        .product-price, .product-stock, .product-limit {
+            margin: 0 0 6px 0;
+            font-size: 13px;
+        }
+        
+        /* Floating Chat Button */
+        .chat-fab {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            z-index: 1000;
+            border-radius: 50px;
+            padding: 10px 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.15);
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <iframe id="deepseek-frame" src="/deepseek"></iframe>
+        <div id="main-content">
+        <div class="page-header">
+            <h1 class="page-title">欢迎, {{ session.username }}!</h1>
+            <div class="points-display">剩余积分: {{ current_points }}</div>
+        </div>
+        
+        <a href="/logout">退出登录</a>
+
+        <h2>商品</h2>
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="product-image-container">
+                    {% if product.picture %}
+                        <img src="/static/images/{{ product.picture }}"
+                             class="product-image"
+                             alt="{{ product.name }}">
+                    {% else %}
+                        <div class="no-image">无图片</div>
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    <div class="product-details">
+                        <p class="product-price">价格: {{ product.price }}</p>
+                        <p class="product-stock">库存: {{ product.stock }}</p>
+                        <p class="product-limit">限购数量: {{ product.limit }}</p>
+                    </div>
+                    <form method="POST" action="/purchase/{{ product.id }}" onsubmit="return validatePurchase(this)" class="product-action">
+                        <div class="action-group">
+                            <input type="number" name="quantity" min="1" max="{{ product.limit }}" value="1">
+                            <button type="submit" class="btn-ant">购买</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2>您的购买历史</h2>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>商品名称</th>
+                        <th>数量</th>
+                        <th>总花费</th>
+                        <th>购买时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in purchase_records %}
+                    <tr>
+                        <td>{{ record.product.name }}</td>
+                        <td>{{ record.quantity }}</td>
+                        <td>{{ record.quantity * record.product.price }}</td>
+                        <td>{{ record.purchase_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Floating Chat Button -->
+    <button class="btn btn-ant chat-fab d-md-none"
+        onclick="document.getElementById('deepseek-frame').classList.toggle('show')">
+        💬 聊天
+    </button>
+    </div>
+</body>
+</html>
+
+<script>
+function validatePurchase(form) {
+    const quantity = parseInt(form.quantity.value);
+    const limit = parseInt(form.quantity.max);
+    if (quantity > limit) {
+        alert(`购买数量不能超过限购数量: ${limit}`);
+        return false;
+    }
+    return true;
+}
+</script>

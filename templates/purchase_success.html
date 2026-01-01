@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>购买成功</title>
+    <style>
+        :root {
+            /* 主色（按钮 / 高亮 / 链接） */
+            --primary: #1677ff;
+            /* 次级色（hover / 次要强调） */
+            --secondary: #4096ff;
+            /* 强调浅色（Badge / Tag / 提示背景） */
+            --accent: #e6f4ff;
+            /* 更浅背景（hover / 选中 / 卡片弱强调） */
+            --light: #f0f5ff;
+            /* 深色（active / 重点强调） */
+            --dark: #0958d9;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        h1 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        p {
+            color: #555;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        a:hover {
+            background-color: var(--dark);
+        }
+    </style>
+</head>
+<body>
+    <h1>购买成功!</h1>
+    <p>您已成功购买 {{ product_name }}</p>
+    <!-- ，花费 {{ product_price }} 积分。 -->
+    <p>剩余积分: {{ current_points }}</p>
+    <a href="/">返回商店</a>
+</body>
+</html>

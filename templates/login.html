@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登录</title>
+    <style>
+        :root {
+            /* 主色（按钮 / 高亮 / 链接） */
+            --primary: #1677ff;
+            /* 次级色（hover / 次要强调） */
+            --secondary: #4096ff;
+            /* 强调浅色（Badge / Tag / 提示背景） */
+            --accent: #e6f4ff;
+            /* 更浅背景（hover / 选中 / 卡片弱强调） */
+            --light: #f0f5ff;
+            /* 深色（active / 重点强调） */
+            --dark: #0958d9;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: var(--dark);
+        }
+        p[style*="color:red"] {
+            color: var(--primary) !important;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST" action="/login">
+        <h1>登录</h1>
+        {% if error %}
+            <p style="color:red">{{ error }}</p>
+        {% endif %}
+        <label>用户名:</label>
+        <input type="text" name="username" required>
+        <label>密码:</label>
+        <input type="password" name="password" required>
+        <button type="submit">登录</button>
+    </form>
+</body>
+</html>
