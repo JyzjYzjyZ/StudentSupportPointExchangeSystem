@@ -6,6 +6,22 @@ A dedicated platform for managing financial aid points, enabling students in nee
 
 一个专为学生资助管理设计的积分兑换平台，帮助有需要的学生通过积分（爱心币）兑换学习和日常生活必需品。
 
+## 系统截图
+| 管理员后台界面 |
+|----------------|
+| ![管理员后台界面](static/view1.png) |
+
+| 带聊天的商品页面 | 商品页面 |
+|------------------|----------|
+| ![带聊天的商品页面](static/view2.png) | ![商品页面](static/view3.png) |
+## 使用教程视频
+
+<video controls width="100%" style="max-width: 800px; height: auto; margin: 20px 0;">
+    <source src="static/help.mp4" type="video/mp4">
+    您的浏览器不支持视频播放，请点击 <a href="static/help.mp4">此处</a> 下载观看。
+</video>
+
+
 ## 功能特点
 
 ### 核心功能
